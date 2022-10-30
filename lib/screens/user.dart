@@ -14,7 +14,12 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
+  final TextEditingController _addressTextController = TextEditingController();
   @override
+  void dispose() {
+    _addressTextController.dispose();
+    super.dispose();
+  }
   Widget build(BuildContext context) {
     final themeState = Provider.of<DarkThemeProvider>(context);
     final Color color = themeState.getDarkTheme ? Colors.white : Colors.black;
@@ -28,7 +33,7 @@ class _UserScreenState extends State<UserScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
-                  height: 15, 
+                  height: 15,
                 ),
                 RichText(
                   text: TextSpan(
@@ -46,7 +51,6 @@ class _UserScreenState extends State<UserScreen> {
                                 fontWeight: FontWeight.w600),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                print('My name is pressed');
                               }),
                       ]),
                 ),
@@ -58,7 +62,21 @@ class _UserScreenState extends State<UserScreen> {
                     subtitle: 'My subtitle',
                     icon: IconlyLight.profile,
                     color: color,
-                    onPressed: () {}),
+                    onPressed: () async {
+                      await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Update Address'),
+                              content: TextField(maxLines: 5,
+                              decoration: const InputDecoration(hintText: 'Your new address'),
+                              controller: _addressTextController,),
+                              actions: [
+                                TextButton(onPressed: () {}, child: const Text('Update'))
+                              ],
+                            );
+                          });
+                    }),
                 _listTiles(
                     title: 'Orders',
                     icon: IconlyLight.bag,
@@ -75,7 +93,7 @@ class _UserScreenState extends State<UserScreen> {
                     color: color,
                     onPressed: () {}),
                 _listTiles(
-                    title: 'Forget Password',
+                    title: 'Forgot Password',
                     icon: IconlyLight.unlock,
                     color: color,
                     onPressed: () {}),
